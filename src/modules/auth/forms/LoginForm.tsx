@@ -8,6 +8,7 @@ import { title, text, subtitle } from '@/modules/core/design-system/primitives';
 import { useAuthService } from '../services/authService';
 import type { LoginRequest } from '../api/models/LoginRequest';
 import { AUTH_PAGE_ROUTES } from '../routes/authRouteConstants';
+import useAppToasts from '@/modules/core/hooks/useAppToasts';
 
 export interface LoginFormProps {
   onSuccess?: () => void;
@@ -16,6 +17,7 @@ export interface LoginFormProps {
 const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
   const navigate = useNavigate();
   const { login } = useAuthService();
+  const { showToast } = useAppToasts();
   const [formData, setFormData] = React.useState<LoginRequest>({
     user_name: '',
     password: ''
@@ -29,6 +31,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
     try {
       await login(formData);
       onSuccess?.();
+      showToast({
+        title: 'Login Successful',
+        description: 'You have successfully logged in.',
+        color: 'success',
+      });
     } catch (error) {
       console.error('Login failed:', error);
     } finally {
