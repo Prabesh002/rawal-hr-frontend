@@ -9,6 +9,10 @@ export const siteConfig = {
       href: "/",
     },
     {
+      label: "Time Clock",
+      href: "/hr/time-clock",
+    },
+    {
       label: "Employees",
       href: "/hr/employees",
     },
