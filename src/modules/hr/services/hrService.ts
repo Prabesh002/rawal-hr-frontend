@@ -25,14 +25,14 @@ export const useHrService = () => {
       method: 'GET',
     });
   };
-
+  
   const getEmployeeById = async (id: string): Promise<EmployeeResponse> => {
     return apiCaller<EmployeeResponse>({
       url: HR_API_ROUTES.EMPLOYEE_BY_ID(id),
       method: 'GET',
     });
   };
-  
+
   const createEmployee = async (data: EmployeeCreateRequest): Promise<EmployeeResponse> => {
     return apiCaller<EmployeeResponse>({
       url: HR_API_ROUTES.EMPLOYEES,
@@ -56,6 +56,20 @@ export const useHrService = () => {
     });
   };
 
+  const getPayrolls = async (): Promise<PayrollResponse[]> => {
+    return apiCaller<PayrollResponse[]>({
+      url: HR_API_ROUTES.PAYROLLS,
+      method: 'GET',
+    });
+  };
+
+  const getPayrollById = async (id: string): Promise<PayrollResponse> => {
+    return apiCaller<PayrollResponse>({
+      url: HR_API_ROUTES.PAYROLL_BY_ID(id),
+      method: 'GET',
+    });
+  };
+
   const createPayroll = async (data: PayrollCreateRequest): Promise<PayrollResponse> => {
     return apiCaller<PayrollResponse>({
       url: HR_API_ROUTES.PAYROLLS,
@@ -76,6 +90,13 @@ export const useHrService = () => {
     return apiCaller<void>({
       url: HR_API_ROUTES.PAYROLL_BY_ID(id),
       method: 'DELETE',
+    });
+  };
+
+  const getSalaryRatesByEmployee = async (employeeId: string): Promise<SalaryRateResponse[]> => {
+    return apiCaller<SalaryRateResponse[]>({
+      url: HR_API_ROUTES.GET_RATES_BY_EMPLOYEE_ID(employeeId),
+      method: 'GET',
     });
   };
 
@@ -130,10 +151,13 @@ export const useHrService = () => {
     updateEmployee,
     deleteEmployee,
 
+    getPayrolls,
+    getPayrollById,
     createPayroll,
     updatePayroll,
     deletePayroll,
 
+    getSalaryRatesByEmployee,
     createSalaryRate,
     updateSalaryRate,
     deleteSalaryRate,

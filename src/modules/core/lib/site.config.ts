@@ -13,24 +13,20 @@ export const siteConfig = {
       href: "/hr/employees",
     },
     {
+      label: "Payrolls",
+      href: "/hr/payrolls",
+    },
+    {
+      label: "Create Payroll",
+      href: "/hr/payroll/create",
+    },
+    {
       label: "Employee Setup",
       href: "/hr/employee-setup",
     },
     {
       label: "login",
       href: "/auth/login",
-    },
-    {
-      label: "Pricing",
-      href: "/pricing",
-    },
-    {
-      label: "Blog",
-      href: "/blog",
-    },
-    {
-      label: "About",
-      href: "/about",
     },
   ],
 };

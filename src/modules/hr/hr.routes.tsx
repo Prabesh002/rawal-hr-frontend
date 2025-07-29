@@ -5,7 +5,10 @@ import { HR_PAGE_ROUTES } from './routes/hrRouteConstants';
 import EmployeeListPage from './employee-management/pages/EmployeeListPage';
 import EmployeeViewPage from './employee-management/pages/EmployeeViewPage';
 import EmployeeEditPage from './employee-management/pages/EmployeeEditPage';
-
+import PayrollPage from './payroll-management/pages/PayrollPage';
+import PayrollListPage from './payroll-management/pages/PayrollListPage';
+import PayrollViewPage from './payroll-management/pages/PayrollViewPage';
+import PayrollEditPage from './payroll-management/pages/PayrollEditPage';
 
 export const hrRoutes: AppRoute[] = [
   {
@@ -27,6 +30,22 @@ export const hrRoutes: AppRoute[] = [
       {
         path: HR_PAGE_ROUTES.EMPLOYEE_EDIT.substring(1),
         element: <EmployeeEditPage />,
+      },
+      {
+        path: HR_PAGE_ROUTES.PAYROLL_CREATE.substring(1),
+        element: <PayrollPage />,
+      },
+      {
+        path: HR_PAGE_ROUTES.PAYROLLS_LIST.substring(1),
+        element: <PayrollListPage />,
+      },
+      {
+        path: HR_PAGE_ROUTES.PAYROLL_VIEW.substring(1),
+        element: <PayrollViewPage />,
+      },
+      {
+        path: HR_PAGE_ROUTES.PAYROLL_EDIT.substring(1),
+        element: <PayrollEditPage />,
       }
     ]
   }
