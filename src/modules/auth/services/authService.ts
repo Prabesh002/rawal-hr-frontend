@@ -15,12 +15,12 @@ export const useAuthService = () => {
   const zustandLogout = useAuth((state) => state.logout);
 
   const register = async (data: RegisterRequest): Promise<UserResponse> => {
-    const response = await apiCaller<AccessTokenDto>({
+    const response = await apiCaller<UserResponse>({
       url: AUTH_REGISTER_ENDPOINT,
       method: 'POST',
       data,
     });
-    return response.user_response;
+    return response;
   };
 
   const login = async (data: LoginRequest): Promise<UserResponse> => {
@@ -29,6 +29,7 @@ export const useAuthService = () => {
       method: 'POST',
       data,
     });
+    console.log(response.access_token);
     setRawToken(response.access_token);
     zustandLogin(response.user_response); 
     return response.user_response;
