@@ -1,7 +1,7 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Vite + HeroUI",
+  name: "Rawal HR",
   description: "Make beautiful websites regardless of your design experience.",
   navItems: [
     {
@@ -17,16 +17,16 @@ export const siteConfig = {
       href: "/hr/time-logs",
     },
     {
+      label: "Pay Report",
+      href: "/hr/pay-report",
+    },
+    {
       label: "Employees",
       href: "/hr/employees",
     },
     {
       label: "Payrolls",
       href: "/hr/payrolls",
-    },
-    {
-      label: "Create Payroll",
-      href: "/hr/payroll/create",
     },
     {
       label: "Employee Setup",

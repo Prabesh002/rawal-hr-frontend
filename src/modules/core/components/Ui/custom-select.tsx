@@ -178,7 +178,7 @@ export default function CustomSelect<T extends SelectItem>({
     if (multiSelect && Array.isArray(value)) {
       return value.some((v) => v[valueKey] === item[valueKey])
     }
-    return value && value[valueKey] === item[valueKey]
+    return !!(value && !Array.isArray(value) && value[valueKey] === item[valueKey])
   }
 
   const getDisplayValue = (): string => {
@@ -190,7 +190,10 @@ export default function CustomSelect<T extends SelectItem>({
       return `${value.length} items selected`
     }
 
-    return String(value[labelKey])
+    if (value && !Array.isArray(value)) {
+      return String(value[labelKey])
+    }
+    return placeholder
   }
 
   const hasValue = multiSelect ? Array.isArray(value) && value.length > 0 : value !== null
