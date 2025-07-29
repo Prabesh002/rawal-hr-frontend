@@ -17,12 +17,18 @@ import type {
 } from '../api/models/SalaryRate';
 import type { TimeLogResponse } from '../api/models/TimeLog';
 
-
 export const useHrService = () => {
 
   const getEmployees = async (): Promise<EmployeeResponse[]> => {
     return apiCaller<EmployeeResponse[]>({
       url: HR_API_ROUTES.EMPLOYEES,
+      method: 'GET',
+    });
+  };
+
+  const getEmployeeById = async (id: string): Promise<EmployeeResponse> => {
+    return apiCaller<EmployeeResponse>({
+      url: HR_API_ROUTES.EMPLOYEE_BY_ID(id),
       method: 'GET',
     });
   };
@@ -50,7 +56,6 @@ export const useHrService = () => {
     });
   };
 
-
   const createPayroll = async (data: PayrollCreateRequest): Promise<PayrollResponse> => {
     return apiCaller<PayrollResponse>({
       url: HR_API_ROUTES.PAYROLLS,
@@ -73,7 +78,6 @@ export const useHrService = () => {
       method: 'DELETE',
     });
   };
-
 
   const createSalaryRate = async (data: SalaryRateCreateRequest): Promise<SalaryRateResponse> => {
     return apiCaller<SalaryRateResponse>({
@@ -98,7 +102,6 @@ export const useHrService = () => {
     });
   };
 
-
   const getActiveShift = async (): Promise<TimeLogResponse | null> => {
     return apiCaller<TimeLogResponse | null>({
       url: HR_API_ROUTES.TIME_LOG_ACTIVE,
@@ -121,13 +124,11 @@ export const useHrService = () => {
   };
 
   return {
-
-
     getEmployees,
+    getEmployeeById,
     createEmployee,
     updateEmployee,
     deleteEmployee,
-
 
     createPayroll,
     updatePayroll,

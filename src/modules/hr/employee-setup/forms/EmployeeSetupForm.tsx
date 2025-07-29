@@ -9,6 +9,8 @@ import { useAuthService } from '@/modules/auth/services/authService';
 import { useHrService } from '@/modules/hr/services/hrService';
 import type { RegisterRequest } from '@/modules/auth/api/models/RegisterRequest';
 import type { EmployeeCreateRequest } from '@/modules/hr/api/models/Employee';
+import { useNavigate } from 'react-router-dom';
+import { HR_PAGE_ROUTES } from '../../routes/hrRouteConstants';
 
 interface EmployeeSetupFormData {
   user: RegisterRequest;
@@ -16,6 +18,7 @@ interface EmployeeSetupFormData {
 }
 
 const EmployeeSetupForm: React.FC = () => {
+  const navigate = useNavigate();
   const { register } = useAuthService();
   const { createEmployee } = useHrService();
   const { showToast } = useAppToasts();
@@ -57,6 +60,7 @@ const EmployeeSetupForm: React.FC = () => {
         color: 'success',
       });
       setFormData(initialFormData);
+      navigate(HR_PAGE_ROUTES.EMPLOYEES_LIST)
     } catch (error) {
       console.error('Employee setup failed:', error);
     } finally {

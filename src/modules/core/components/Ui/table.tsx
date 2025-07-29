@@ -2,6 +2,8 @@ import type React from "react"
 import { useState, useMemo, useEffect, useCallback } from "react"
 import { ChevronUp, ChevronDown, Search, Loader2, FileX } from "lucide-react"
 
+import { title } from "@/modules/core/design-system/primitives";
+
 // Types
 export interface Column<T> {
   key: keyof T
@@ -44,11 +46,11 @@ export interface TableProps<T> {
 const TableSkeleton = ({ columns, rows = 5 }: { columns: number; rows?: number }) => (
   <div className="animate-pulse">
     {Array.from({ length: rows }).map((_, i) => (
-      <div key={i} className="border-b border-gray-100">
+      <div key={i} className="border-b border-gray-100 dark:border-gray-700">
         <div className="flex">
           {Array.from({ length: columns }).map((_, j) => (
             <div key={j} className="flex-1 px-4 py-3">
-              <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
             </div>
           ))}
         </div>
@@ -61,8 +63,8 @@ const TableSkeleton = ({ columns, rows = 5 }: { columns: number; rows?: number }
 const EmptyState = ({ message = "No data available", searchTerm }: { message?: string; searchTerm?: string }) => (
   <div className="flex flex-col items-center justify-center py-12 text-center">
     <FileX className="w-12 h-12 text-gray-400 dark:text-gray-500 mb-4" />
-    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-      {searchTerm ? "No results found" : "No data available"}
+    <h3 className={title({ size: 'sm', class: "mb-2" })}>
+      {searchTerm ? "No results found" : "No Data Available"}
     </h3>
     <p className="text-gray-500 dark:text-gray-400 max-w-sm">
       {searchTerm ? `No results match "${searchTerm}". Try adjusting your search terms.` : message}
@@ -73,7 +75,7 @@ const EmptyState = ({ message = "No data available", searchTerm }: { message?: s
 // Base table components with dark theme support
 export const TableContainer = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
   <div
-    className={`overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-colors duration-200 ${className}`}
+    className={`overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50 shadow-sm transition-colors duration-200 ${className}`}
   >
     {children}
   </div>
@@ -86,7 +88,7 @@ export const TableWrapper = ({ children }: { children: React.ReactNode }) => (
 )
 
 export const TableHeader = ({ children }: { children: React.ReactNode }) => (
-  <thead className="bg-gray-50 border-b border-gray-200 transition-colors duration-200">{children}</thead>
+  <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 transition-colors duration-200">{children}</thead>
 )
 
 export const TableBody = ({
@@ -106,7 +108,7 @@ export const TableBody = ({
   searchTerm?: string
   columnsCount: number
 }) => (
-  <tbody className={`transition-all duration-300 ${striped ? "[&>tr:nth-child(even)]:bg-gray-50" : ""}`}>
+  <tbody className={`transition-all duration-300 ${striped ? "[&>tr:nth-child(even)]:bg-gray-50 dark:[&>tr:nth-child(even)]:bg-white/5" : ""}`}>
     {loading ? (
       <tr>
         <td colSpan={columnsCount} className="p-0">
@@ -138,9 +140,9 @@ export const TableRow = ({
 }) => (
   <tr
     className={`
-      border-b border-gray-100 last:border-b-0 
+      border-b border-gray-100 last:border-b-0 dark:border-gray-700
       transition-all duration-200 ease-in-out
-      ${hoverable ? "hover:bg-gray-50" : ""}
+      ${hoverable ? "hover:bg-gray-50 dark:hover:bg-white/10" : ""}
       ${onClick ? "cursor-pointer" : ""}
       ${className}
     `}
@@ -195,7 +197,7 @@ export const TableHeaderCell = ({
       px-4 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider
       transition-all duration-200 ease-in-out
       ${align === "center" ? "text-center" : align === "right" ? "text-right" : "text-left"}
-      ${sortable ? "cursor-pointer select-none hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100" : ""}
+      ${sortable ? "cursor-pointer select-none hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" : ""}
       ${className}
     `}
     style={width ? { width } : undefined}
@@ -211,12 +213,12 @@ export const TableHeaderCell = ({
         <div className="flex flex-col transition-all duration-200">
           <ChevronUp
             className={`w-3 h-3 transition-all duration-200 ${
-              sortDirection === "asc" ? "text-blue-600 dark:text-blue-400 scale-110" : "text-gray-300"
+              sortDirection === "asc" ? "text-blue-600 dark:text-blue-400 scale-110" : "text-gray-300 dark:text-gray-600"
             }`}
           />
           <ChevronDown
             className={`w-3 h-3 -mt-1 transition-all duration-200 ${
-              sortDirection === "desc" ? "text-blue-600 dark:text-blue-400 scale-110" : "text-gray-300"
+              sortDirection === "desc" ? "text-blue-600 dark:text-blue-400 scale-110" : "text-gray-300 dark:text-gray-600"
             }`}
           />
         </div>
@@ -248,9 +250,9 @@ export const TableSearch = ({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md 
-                 bg-white text-gray-900 dark:text-gray-100
-                 focus:ring-2 focus:ring-blue-500 focus:border-transparent 
+      className="w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-md 
+                 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
+                 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-500 focus:border-transparent 
                  outline-none text-sm transition-all duration-200
                  placeholder:text-gray-400 dark:placeholder:text-gray-500"
     />
@@ -305,8 +307,8 @@ export const TablePagination = ({
 
   return (
     <div
-      className={`flex items-center justify-between px-4 py-3 border-t border-gray-200 
-                     bg-gray-50 transition-colors duration-200 ${className}`}
+      className={`flex items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-gray-700
+                     bg-gray-50 dark:bg-gray-800/60 transition-colors duration-200 ${className}`}
     >
       <div className="text-sm text-gray-700 dark:text-gray-300 transition-colors duration-200">
         {loading ? (
@@ -322,9 +324,9 @@ export const TablePagination = ({
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1 || loading}
-          className="px-3 py-1 text-sm border border-gray-300 rounded-md 
-                     bg-white text-gray-700 dark:text-gray-300
-                     hover:bg-gray-100 
+          className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md 
+                     bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300
+                     hover:bg-gray-100 dark:hover:bg-gray-700
                      disabled:opacity-50 disabled:cursor-not-allowed
                      transition-all duration-200"
         >
@@ -340,7 +342,7 @@ export const TablePagination = ({
               page === currentPage
                 ? "bg-blue-500 text-white border-blue-500 shadow-sm"
                 : typeof page === "number"
-                  ? "border-gray-300 bg-white text-gray-700 dark:text-gray-300 hover:bg-gray-100"
+                  ? "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                   : "border-transparent text-gray-400 dark:text-gray-500 cursor-default"
             }`}
           >
@@ -351,9 +353,9 @@ export const TablePagination = ({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages || loading}
-          className="px-3 py-1 text-sm border border-gray-300 rounded-md 
-                     bg-white text-gray-700 dark:text-gray-300
-                     hover:bg-gray-100 
+          className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md 
+                     bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300
+                     hover:bg-gray-100 dark:hover:bg-gray-700
                      disabled:opacity-50 disabled:cursor-not-allowed
                      transition-all duration-200"
         >
