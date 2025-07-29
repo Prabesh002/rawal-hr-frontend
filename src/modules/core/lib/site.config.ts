@@ -13,6 +13,10 @@ export const siteConfig = {
       href: "/hr/time-clock",
     },
     {
+      label: "Time Logs",
+      href: "/hr/time-logs",
+    },
+    {
       label: "Employees",
       href: "/hr/employees",
     },

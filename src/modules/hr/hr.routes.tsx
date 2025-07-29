@@ -10,6 +10,8 @@ import PayrollListPage from './payroll-management/pages/PayrollListPage';
 import PayrollViewPage from './payroll-management/pages/PayrollViewPage';
 import PayrollEditPage from './payroll-management/pages/PayrollEditPage';
 import TimeClockPage from './time-management/pages/TimeClockPage';
+import TimeLogListPage from './time-management/pages/TimeLogListPage';
+import TimeLogViewPage from './time-management/pages/TimeLogViewPage';
 
 export const hrRoutes: AppRoute[] = [
   {
@@ -51,6 +53,14 @@ export const hrRoutes: AppRoute[] = [
       {
         path: HR_PAGE_ROUTES.TIME_CLOCK.substring(1),
         element: <TimeClockPage />,
+      },
+      {
+        path: HR_PAGE_ROUTES.TIME_LOGS_LIST.substring(1),
+        element: <TimeLogListPage />,
+      },
+      {
+        path: HR_PAGE_ROUTES.TIME_LOG_VIEW.substring(1),
+        element: <TimeLogViewPage />,
       }
     ]
   }

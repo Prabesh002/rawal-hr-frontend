@@ -10,4 +10,6 @@ export const HR_PAGE_ROUTES = {
   PAYROLL_EDIT: '/hr/payrolls/:id/edit',
 
   TIME_CLOCK: '/hr/time-clock',
+  TIME_LOGS_LIST: '/hr/time-logs',
+  TIME_LOG_VIEW: '/hr/time-logs/:id',
 } as const;

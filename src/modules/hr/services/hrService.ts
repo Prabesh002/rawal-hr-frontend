@@ -17,8 +17,10 @@ import type {
 } from '../api/models/SalaryRate';
 import type { TimeLogResponse } from '../api/models/TimeLog';
 
+
 export const useHrService = () => {
 
+  // --- Employee Functions ---
   const getEmployees = async (): Promise<EmployeeResponse[]> => {
     return apiCaller<EmployeeResponse[]>({
       url: HR_API_ROUTES.EMPLOYEES,
@@ -56,6 +58,7 @@ export const useHrService = () => {
     });
   };
 
+  // --- Payroll Functions ---
   const getPayrolls = async (): Promise<PayrollResponse[]> => {
     return apiCaller<PayrollResponse[]>({
       url: HR_API_ROUTES.PAYROLLS,
@@ -93,6 +96,7 @@ export const useHrService = () => {
     });
   };
 
+  // --- Salary Rate Functions ---
   const getSalaryRatesByEmployee = async (employeeId: string): Promise<SalaryRateResponse[]> => {
     return apiCaller<SalaryRateResponse[]>({
       url: HR_API_ROUTES.GET_RATES_BY_EMPLOYEE_ID(employeeId),
@@ -123,6 +127,27 @@ export const useHrService = () => {
     });
   };
 
+  const getTimeLogs = async (): Promise<TimeLogResponse[]> => {
+    return apiCaller<TimeLogResponse[]>({
+      url: HR_API_ROUTES.TIME_LOGS,
+      method: 'GET',
+    });
+  };
+
+  const getTimeLogsByEmployee = async (employeeId: string): Promise<TimeLogResponse[]> => {
+    return apiCaller<TimeLogResponse[]>({
+      url: HR_API_ROUTES.TIME_LOGS_BY_EMPLOYEE(employeeId),
+      method: 'GET',
+    });
+  };
+
+  const getTimeLogById = async (logId: string): Promise<TimeLogResponse> => {
+    return apiCaller<TimeLogResponse>({
+      url: HR_API_ROUTES.TIME_LOG_BY_ID(logId),
+      method: 'GET',
+    });
+  };
+
   const getActiveShift = async (): Promise<TimeLogResponse | null> => {
     return apiCaller<TimeLogResponse | null>({
       url: HR_API_ROUTES.TIME_LOG_ACTIVE,
@@ -144,6 +169,13 @@ export const useHrService = () => {
     });
   };
 
+  const deleteTimeLog = async (logId: string): Promise<void> => {
+    return apiCaller<void>({
+      url: HR_API_ROUTES.TIME_LOG_BY_ID(logId),
+      method: 'DELETE',
+    });
+  };
+
   return {
     getEmployees,
     getEmployeeById,
@@ -162,8 +194,12 @@ export const useHrService = () => {
     updateSalaryRate,
     deleteSalaryRate,
 
+    getTimeLogs,
+    getTimeLogsByEmployee,
+    getTimeLogById,
     getActiveShift,
     startShift,
     stopShift,
+    deleteTimeLog,
   };
 };
