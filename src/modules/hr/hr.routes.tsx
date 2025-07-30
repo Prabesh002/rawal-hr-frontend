@@ -67,12 +67,12 @@ export const hrRoutes: AppRoute[] = [
       {
         path: HR_PAGE_ROUTES.TIME_LOGS_LIST.substring(1),
         element: <TimeLogListPage />,
-        requiresAdmin: true,
+        requiresAdmin: false,
       },
       {
         path: HR_PAGE_ROUTES.TIME_LOG_VIEW.substring(1),
         element: <TimeLogViewPage />,
-        requiresAdmin: true,
+        requiresAdmin: false,
       },
       {
         path: HR_PAGE_ROUTES.TIME_LOG_EDIT.substring(1),
@@ -82,7 +82,7 @@ export const hrRoutes: AppRoute[] = [
       {
         path: HR_PAGE_ROUTES.PAY_REPORT.substring(1),
         element: <EmployeePayReportPage />,
-        requiresAdmin: true,
+        requiresAdmin: false,
       }
     ]
   }

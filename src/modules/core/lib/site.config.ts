@@ -26,12 +26,11 @@ export const siteConfig: SiteConfig = {
     {
       label: "Time Logs",
       href: "/hr/time-logs",
-      requiresAdmin: true,
     },
     {
       label: "Pay Report",
       href: "/hr/pay-report",
-      requiresAdmin: true,
+      requiresAdmin: false,
     },
     {
       label: "Employees",
@@ -41,11 +40,6 @@ export const siteConfig: SiteConfig = {
     {
       label: "Payrolls",
       href: "/hr/payrolls",
-      requiresAdmin: true,
-    },
-    {
-      label: "Employee Setup",
-      href: "/hr/employee-setup",
       requiresAdmin: true,
     },
     {

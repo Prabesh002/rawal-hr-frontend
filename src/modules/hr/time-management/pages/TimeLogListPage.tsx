@@ -11,11 +11,13 @@ import useAppToasts from '@/modules/core/hooks/useAppToasts';
 
 import type { TimeLogResponse } from '../../api/models/TimeLog';
 import type { EmployeeResponse } from '../../api/models/Employee';
+import { useAuth } from '@/modules/auth/hooks/useAuth';
 
 const TimeLogListPage: React.FC = () => {
   const navigate = useNavigate();
   const { getTimeLogs, getTimeLogsByEmployee, getEmployees, deleteTimeLog } = useHrService();
   const { showToast } = useAppToasts();
+  const { isAdmin } = useAuth();
 
   const [timeLogs, setTimeLogs] = useState<TimeLogResponse[]>([]);
   const [employees, setEmployees] = useState<EmployeeResponse[]>([]);
@@ -72,8 +74,13 @@ const TimeLogListPage: React.FC = () => {
       render: (_, row) => (
         <div className="flex gap-2 justify-center">
           <Button size="sm" variant="light" onPress={() => navigate(`/hr/time-logs/${row.id}`)}>View</Button>
-          <Button size="sm" onPress={() => navigate(`/hr/time-logs/${row.id}/edit`)}>Edit</Button>
-          <Button size="sm" color="danger" variant="light" onPress={() => handleDelete(row.id)}>Delete</Button>
+          {isAdmin && (
+            <>
+              <Button size="sm" onPress={() => navigate(`/hr/time-logs/${row.id}/edit`)}>Edit</Button>
+             
+            </>
+          )}
+           <Button size="sm" color="danger" variant="light" onPress={() => handleDelete(row.id)}>Delete</Button>
         </div>
       ),
     },
