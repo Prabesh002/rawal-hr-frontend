@@ -7,6 +7,7 @@ import { UserResponse } from '../api/models/UserResponse';
 interface AuthState {
   isAuthenticated: boolean;
   user: UserResponse | null;
+  isAdmin: boolean;
   login: (user: UserResponse) => void;
   logout: () => void;
 }
@@ -18,8 +19,9 @@ export const useAuth = create<AuthState, [["zustand/persist", AuthPersist]]>(
     (set) => ({
       isAuthenticated: false,
       user: null,
-      login: (user) => set({ isAuthenticated: true, user }),
-      logout: () => set({ isAuthenticated: false, user: null }),
+      isAdmin: false,
+      login: (user) => set({ isAuthenticated: true, user, isAdmin: user.is_admin }),
+      logout: () => set({ isAuthenticated: false, user: null, isAdmin: false }),
     }),
     {
       name: AUTH_STORAGE_KEY,

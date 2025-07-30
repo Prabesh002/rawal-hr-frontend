@@ -7,4 +7,5 @@ export interface AppRoute {
   index?: boolean; 
   isPublic?: boolean;
   requiresAuth?: boolean;
+  requiresAdmin?: boolean;
 }

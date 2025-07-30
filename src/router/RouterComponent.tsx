@@ -7,15 +7,18 @@ import NotFound from '@/pages/NotFound';
 import Unauthorized from '@/pages/Unauthorized';
 
 const buildRoutesRecursive = (routes: AppRoute[]): React.ReactNode[] => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isAdmin } = useAuth();
 
   return routes.map((route, i) => {
-    const { path, element, children, index, requiresAuth } = route;
+    const { path, element, children, index, requiresAuth, requiresAdmin } = route;
 
-    const routeElement =
-      requiresAuth && !isAuthenticated
-        ? <Navigate to="/unauthorized" replace />
-        : element;
+    let routeElement = element;
+
+    if (requiresAdmin && !isAdmin) {
+      routeElement = <Navigate to="/unauthorized" replace />;
+    } else if (requiresAuth && !isAuthenticated) {
+      routeElement = <Navigate to="/unauthorized" replace />;
+    }
 
     if (index) {
       return (

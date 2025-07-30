@@ -1,7 +1,18 @@
-export type SiteConfig = typeof siteConfig;
+export type NavItem = {
+  label: string;
+  href: string;
+  requiresAdmin?: boolean;
+  isPublic?: boolean;
+};
 
-export const siteConfig = {
-  name: "Rawal HR",
+export type SiteConfig = {
+  name: string;
+  description: string;
+  navItems: NavItem[];
+};
+
+export const siteConfig: SiteConfig = {
+  name: "Vite + HeroUI",
   description: "Make beautiful websites regardless of your design experience.",
   navItems: [
     {
@@ -15,26 +26,32 @@ export const siteConfig = {
     {
       label: "Time Logs",
       href: "/hr/time-logs",
+      requiresAdmin: true,
     },
     {
       label: "Pay Report",
       href: "/hr/pay-report",
+      requiresAdmin: true,
     },
     {
       label: "Employees",
       href: "/hr/employees",
+      requiresAdmin: true,
     },
     {
       label: "Payrolls",
       href: "/hr/payrolls",
+      requiresAdmin: true,
     },
     {
       label: "Employee Setup",
       href: "/hr/employee-setup",
+      requiresAdmin: true,
     },
     {
       label: "login",
       href: "/auth/login",
+      isPublic: true,
     },
   ],
 };
