@@ -72,6 +72,7 @@ const TimeLogListPage: React.FC = () => {
       render: (_, row) => (
         <div className="flex gap-2 justify-center">
           <Button size="sm" variant="light" onPress={() => navigate(`/hr/time-logs/${row.id}`)}>View</Button>
+          <Button size="sm" onPress={() => navigate(`/hr/time-logs/${row.id}/edit`)}>Edit</Button>
           <Button size="sm" color="danger" variant="light" onPress={() => handleDelete(row.id)}>Delete</Button>
         </div>
       ),

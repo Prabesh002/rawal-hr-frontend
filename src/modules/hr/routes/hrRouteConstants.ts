@@ -12,6 +12,7 @@ export const HR_PAGE_ROUTES = {
   TIME_CLOCK: '/hr/time-clock',
   TIME_LOGS_LIST: '/hr/time-logs',
   TIME_LOG_VIEW: '/hr/time-logs/:id',
+  TIME_LOG_EDIT: '/hr/time-logs/:id/edit',
   
   PAY_REPORT: '/hr/pay-report',
 } as const;

@@ -5,3 +5,8 @@ export interface TimeLogResponse {
   end_time: string | null;
   created_at: string;
 }
+
+export interface TimeLogUpdateRequest {
+  start_time?: string;
+  end_time?: string | null;
+}

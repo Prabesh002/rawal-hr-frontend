@@ -4,7 +4,7 @@ import type { AccessTokenDto } from '../api/models/AccessTokenDto';
 import type { LoginRequest } from '../api/models/LoginRequest';
 import type { RegisterRequest } from '../api/models/RegisterRequest';
 import type { UserResponse } from '../api/models/UserResponse';
-import { AUTH_LOGIN_ENDPOINT, AUTH_REGISTER_ENDPOINT } from '../api/routes/authApiRoutes';
+import { AUTH_LOGIN_ENDPOINT, AUTH_REGISTER_ENDPOINT, AUTH_USERS_ENDPOINT } from '../api/routes/authApiRoutes';
 import { useAuth } from '../hooks/useAuth'; 
 import useLocalStorage from '@/modules/core/hooks/useLocalStorage';
 
@@ -15,12 +15,12 @@ export const useAuthService = () => {
   const zustandLogout = useAuth((state) => state.logout);
 
   const register = async (data: RegisterRequest): Promise<UserResponse> => {
-    const response = await apiCaller<UserResponse>({
+    const response = await apiCaller<AccessTokenDto>({
       url: AUTH_REGISTER_ENDPOINT,
       method: 'POST',
       data,
     });
-    return response;
+    return response.user_response;
   };
 
   const login = async (data: LoginRequest): Promise<UserResponse> => {
@@ -29,7 +29,6 @@ export const useAuthService = () => {
       method: 'POST',
       data,
     });
-    console.log(response.access_token);
     setRawToken(response.access_token);
     zustandLogin(response.user_response); 
     return response.user_response;
@@ -40,5 +39,12 @@ export const useAuthService = () => {
     zustandLogout(); 
   };
 
-  return { register, login, logout };
+  const getUsers = async (): Promise<UserResponse[]> => {
+    return apiCaller<UserResponse[]>({
+      url: AUTH_USERS_ENDPOINT,
+      method: 'GET',
+    });
+  };
+
+  return { register, login, logout, getUsers };
 };

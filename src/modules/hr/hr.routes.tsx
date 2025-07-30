@@ -13,6 +13,7 @@ import TimeClockPage from './time-management/pages/TimeClockPage';
 import TimeLogListPage from './time-management/pages/TimeLogListPage';
 import TimeLogViewPage from './time-management/pages/TimeLogViewPage';
 import EmployeePayReportPage from './payroll-management/pages/EmployeePayReportPage';
+import TimeLogEditPage from './time-management/pages/TimeLogEditPage';
 
 export const hrRoutes: AppRoute[] = [
   {
@@ -62,6 +63,10 @@ export const hrRoutes: AppRoute[] = [
       {
         path: HR_PAGE_ROUTES.TIME_LOG_VIEW.substring(1),
         element: <TimeLogViewPage />,
+      },
+      {
+        path: HR_PAGE_ROUTES.TIME_LOG_EDIT.substring(1),
+        element: <TimeLogEditPage />,
       },
       {
         path: HR_PAGE_ROUTES.PAY_REPORT.substring(1),
