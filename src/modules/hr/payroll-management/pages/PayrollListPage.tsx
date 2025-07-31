@@ -3,16 +3,21 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@heroui/button';
 
 import { Table, type Column } from '@/modules/core/components/Ui/table';
+import { DataFilter, type FilterConfig } from '@/modules/core/components/Ui/DataFilter';
 import { title } from '@/modules/core/design-system/primitives';
 import { useHrService } from '@/modules/hr/services/hrService';
 import type { PayrollResponse } from '@/modules/hr/api/models/Payroll';
 import type { EmployeeResponse } from '@/modules/hr/api/models/Employee';
 import { HR_PAGE_ROUTES } from '../../routes/hrRouteConstants';
 
+const months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+
 const PayrollListPage: React.FC = () => {
   const navigate = useNavigate();
   const { getPayrolls, getEmployees } = useHrService();
-  const [payrolls, setPayrolls] = useState<PayrollResponse[]>([]);
+
+  const [allPayrolls, setAllPayrolls] = useState<PayrollResponse[]>([]);
+  const [filteredPayrolls, setFilteredPayrolls] = useState<PayrollResponse[]>([]);
   const [employees, setEmployees] = useState<EmployeeResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,7 +26,13 @@ const PayrollListPage: React.FC = () => {
       try {
         setLoading(true);
         const [payrollData, employeeData] = await Promise.all([getPayrolls(), getEmployees()]);
-        setPayrolls(payrollData);
+        setAllPayrolls(payrollData);
+        
+        // Default to showing only the current month's payrolls
+        const currentMonth = new Date().getMonth();
+        const defaultFilteredData = payrollData.filter(p => new Date(p.pay_period_start).getMonth() === currentMonth);
+        setFilteredPayrolls(defaultFilteredData);
+
         setEmployees(employeeData);
       } catch (error) {
         console.error("Failed to fetch data:", error);
@@ -31,6 +42,25 @@ const PayrollListPage: React.FC = () => {
     };
     fetchData();
   }, []);
+
+  const payrollFilterConfig: FilterConfig<PayrollResponse>[] = useMemo(() => [
+    {
+      key: 'month',
+      label: 'Filter by Pay Period Month',
+      type: 'select',
+      placeholder: 'All Months',
+      options: months.map((m, i) => ({ value: String(i), label: m })),
+      filterFn: (payroll, month) => new Date(payroll.pay_period_start).getMonth() === parseInt(month, 10),
+    },
+    {
+      key: 'employee',
+      label: 'Filter by Employee',
+      type: 'select',
+      placeholder: 'All Employees',
+      options: employees.map(e => ({ value: e.id, label: `${e.first_name} ${e.last_name}`})),
+      filterFn: (payroll, employeeId) => payroll.employee_id === employeeId,
+    }
+  ], [employees]);
 
   const employeeMap = useMemo(() => {
     return new Map(employees.map(emp => [emp.id, `${emp.first_name} ${emp.last_name}`]));
@@ -69,8 +99,19 @@ const PayrollListPage: React.FC = () => {
           Create New Payroll
         </Button>
       </div>
+
+      <div className="mb-6">
+        <DataFilter
+          data={allPayrolls}
+          filterConfig={payrollFilterConfig}
+          onFilterChange={setFilteredPayrolls}
+          // Set the initial active filter to the current month
+          initialFilters={{ month: String(new Date().getMonth()) }}
+        />
+      </div>
+
       <Table
-        data={payrolls}
+        data={filteredPayrolls}
         columns={columns}
         loading={loading}
         pagination

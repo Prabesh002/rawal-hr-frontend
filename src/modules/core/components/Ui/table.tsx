@@ -75,7 +75,7 @@ const EmptyState = ({ message = "No data available", searchTerm }: { message?: s
 // Base table components with dark theme support
 export const TableContainer = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
   <div
-    className={`overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50 shadow-sm transition-colors duration-200 ${className}`}
+    className={`overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#27272A] shadow-sm transition-colors duration-200 ${className}`}
   >
     {children}
   </div>
@@ -88,7 +88,7 @@ export const TableWrapper = ({ children }: { children: React.ReactNode }) => (
 )
 
 export const TableHeader = ({ children }: { children: React.ReactNode }) => (
-  <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 transition-colors duration-200">{children}</thead>
+  <thead className="bg-gray-50 dark:bg-[#27272A] border-b border-gray-200 dark:border-gray-700 transition-colors duration-200">{children}</thead>
 )
 
 export const TableBody = ({
@@ -251,7 +251,7 @@ export const TableSearch = ({
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
       className="w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-md 
-                 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
+                 bg-white dark:bg-[#27272A] text-gray-900 dark:text-gray-100
                  focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-500 focus:border-transparent 
                  outline-none text-sm transition-all duration-200
                  placeholder:text-gray-400 dark:placeholder:text-gray-500"
@@ -308,7 +308,7 @@ export const TablePagination = ({
   return (
     <div
       className={`flex items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-gray-700
-                     bg-gray-50 dark:bg-gray-800/60 transition-colors duration-200 ${className}`}
+                   bg-gray-50 dark:bg-[#27272A] transition-colors duration-200 ${className}`}
     >
       <div className="text-sm text-gray-700 dark:text-gray-300 transition-colors duration-200">
         {loading ? (
@@ -325,10 +325,10 @@ export const TablePagination = ({
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1 || loading}
           className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md 
-                     bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300
-                     hover:bg-gray-100 dark:hover:bg-gray-700
-                     disabled:opacity-50 disabled:cursor-not-allowed
-                     transition-all duration-200"
+                   bg-white dark:bg-[#27272A] text-gray-700 dark:text-gray-300
+                   hover:bg-gray-100 dark:hover:bg-gray-700
+                   disabled:opacity-50 disabled:cursor-not-allowed
+                   transition-all duration-200"
         >
           Previous
         </button>
@@ -342,7 +342,7 @@ export const TablePagination = ({
               page === currentPage
                 ? "bg-blue-500 text-white border-blue-500 shadow-sm"
                 : typeof page === "number"
-                  ? "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  ? "border-gray-300 dark:border-gray-600 bg-white dark:bg-[#27272A] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                   : "border-transparent text-gray-400 dark:text-gray-500 cursor-default"
             }`}
           >
@@ -354,10 +354,10 @@ export const TablePagination = ({
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages || loading}
           className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md 
-                     bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300
-                     hover:bg-gray-100 dark:hover:bg-gray-700
-                     disabled:opacity-50 disabled:cursor-not-allowed
-                     transition-all duration-200"
+                   bg-white dark:bg-[#27272A] text-gray-700 dark:text-gray-300
+                   hover:bg-gray-100 dark:hover:bg-gray-700
+                   disabled:opacity-50 disabled:cursor-not-allowed
+                   transition-all duration-200"
         >
           Next
         </button>

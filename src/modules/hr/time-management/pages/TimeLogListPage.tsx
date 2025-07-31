@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@heroui/button';
 
 import { Table, type Column } from '@/modules/core/components/Ui/table';
+import { DataFilter, type FilterConfig } from '@/modules/core/components/Ui/DataFilter';
 import { title } from '@/modules/core/design-system/primitives';
 import { useHrService } from '@/modules/hr/services/hrService';
 import CustomSelect from '@/modules/core/components/Ui/custom-select';
@@ -13,22 +14,50 @@ import type { TimeLogResponse } from '../../api/models/TimeLog';
 import type { EmployeeResponse } from '../../api/models/Employee';
 import { useAuth } from '@/modules/auth/hooks/useAuth';
 
+const months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+const days = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ];
+
+const timeLogFilterConfig: FilterConfig<TimeLogResponse>[] = [
+  {
+    key: 'month',
+    label: 'Filter by Month',
+    type: 'select',
+    placeholder: 'All Months',
+    options: months.map((m, i) => ({ value: String(i), label: m })),
+    filterFn: (log, month) => new Date(log.start_time).getMonth() === parseInt(month, 10),
+  },
+  {
+    key: 'dayOfWeek',
+    label: 'Filter by Day of Week',
+    type: 'select',
+    placeholder: 'All Days',
+    options: days.map((d, i) => ({ value: String(i), label: d })),
+    filterFn: (log, day) => new Date(log.start_time).getDay() === parseInt(day, 10),
+  }
+];
+
 const TimeLogListPage: React.FC = () => {
   const navigate = useNavigate();
-  const { getTimeLogs, getTimeLogsByEmployee, getEmployees, deleteTimeLog } = useHrService();
+  const { getTimeLogsByEmployee, getEmployees, deleteTimeLog } = useHrService();
   const { showToast } = useAppToasts();
   const { isAdmin } = useAuth();
 
-  const [timeLogs, setTimeLogs] = useState<TimeLogResponse[]>([]);
+  const [allTimeLogs, setAllTimeLogs] = useState<TimeLogResponse[]>([]);
+  const [filteredTimeLogs, setFilteredTimeLogs] = useState<TimeLogResponse[]>([]);
   const [employees, setEmployees] = useState<EmployeeResponse[]>([]);
   const [selectedEmployee, setSelectedEmployee] = useState<EmployeeResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const fetchTimeLogs = useCallback(() => {
+    if (!selectedEmployee) return;
     setLoading(true);
-    const promise = selectedEmployee ? getTimeLogsByEmployee(selectedEmployee.id) : getTimeLogs();
-    promise
-      .then(setTimeLogs)
+    getTimeLogsByEmployee(selectedEmployee.id)
+      .then(data => {
+        setAllTimeLogs(data);
+        const currentMonth = new Date().getMonth();
+        const defaultFiltered = data.filter(log => new Date(log.start_time).getMonth() === currentMonth);
+        setFilteredTimeLogs(defaultFiltered);
+      })
       .catch(err => console.error("Failed to fetch time logs:", err))
       .finally(() => setLoading(false));
   }, [selectedEmployee]);
@@ -38,8 +67,13 @@ const TimeLogListPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    fetchTimeLogs();
-  }, [fetchTimeLogs]);
+    if (selectedEmployee) {
+      fetchTimeLogs();
+    } else {
+      setAllTimeLogs([]);
+      setFilteredTimeLogs([]);
+    }
+  }, [selectedEmployee, fetchTimeLogs]);
 
   const handleDelete = async (logId: string) => {
     if (window.confirm('Are you sure you want to delete this time log?')) {
@@ -77,9 +111,10 @@ const TimeLogListPage: React.FC = () => {
           {isAdmin && (
             <>
               <Button size="sm" onPress={() => navigate(`/hr/time-logs/${row.id}/edit`)}>Edit</Button>
-              <Button size="sm" color="danger" variant="light" onPress={() => handleDelete(row.id)}>Delete</Button>
+             
             </>
           )}
+          <Button size="sm" color="danger" variant="light" onPress={() => handleDelete(row.id)}>Delete</Button>
         </div>
       ),
     },
@@ -96,21 +131,33 @@ const TimeLogListPage: React.FC = () => {
             onChange={(val) => setSelectedEmployee(val as EmployeeResponse | null)}
             valueKey="id"
             labelKey="first_name"
-            getDisplayValue={(item) => item ? `${item.first_name} ${item.last_name}` : "Filter by employee..."}
-            placeholder="Filter by employee..."
-            clearable
+            getDisplayValue={(item) => item ? `${item.first_name} ${item.last_name}` : "Select an employee to view logs"}
+            placeholder="Select an employee..."
           />
         </div>
       </div>
-      <Table
-        data={timeLogs}
-        columns={columns}
-        loading={loading}
-        pagination
-        searchable
-        striped
-        hoverable
-      />
+      
+      {selectedEmployee && (
+        <>
+          <div className="mb-6">
+            <DataFilter 
+              data={allTimeLogs}
+              filterConfig={timeLogFilterConfig}
+              onFilterChange={setFilteredTimeLogs}
+              initialFilters={{ month: String(new Date().getMonth()) }}
+            />
+          </div>
+          <Table
+            data={filteredTimeLogs}
+            columns={columns}
+            loading={loading}
+            pagination
+            searchable
+            striped
+            hoverable
+          />
+        </>
+      )}
     </section>
   );
 };
