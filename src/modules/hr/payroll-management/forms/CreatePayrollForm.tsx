@@ -126,7 +126,6 @@ const CreatePayrollForm: React.FC = () => {
   }
 
   const employeeLabel = (emp: EmployeeResponse) => `${emp.first_name} ${emp.last_name}`;
-  const isDisabled = !selectedEmployee;
 
   return (
     <Card className="p-8">
@@ -137,54 +136,54 @@ const CreatePayrollForm: React.FC = () => {
           onChange={(val) => setSelectedEmployee(val as EmployeeResponse | null)}
           valueKey="id"
           labelKey="email"
-          getDisplayValue={(item) => item ? employeeLabel(item) : 'Select an employee...'}
+          getDisplayValue={(item: EmployeeResponse) => item ? employeeLabel(item) : 'Select an employee...'}
           searchable
           placeholder="Search and select an employee..."
           disabled={loading.employees}
         />
+        {selectedEmployee && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4 border-t">
+            <Input name="pay_period_start" label="Pay Period Start" type="date" required onChange={handlePayrollDataChange} variant="bordered"/>
+            <Input name="pay_period_end" label="Pay Period End" type="date" required onChange={handlePayrollDataChange} variant="bordered"/>
+            <Input name="total_hours" label="Total Hours" type="number" required value={String(payrollData.total_hours || '')} onChange={handlePayrollDataChange} variant="bordered"/>
+            
+            <div className="relative">
+              <Input
+                label="Hourly Rate ($)"
+                type="number"
+                value={hourlyRateInput}
+                onChange={(e) => setHourlyRateInput(e.target.value)}
+                onBlur={handleRateInputBlur}
+                variant="bordered"
+                step="0.01"
+              />
+              {loading.rate && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 animate-spin text-gray-400" />}
+            </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4 border-t">
-          <Input name="pay_period_start" label="Pay Period Start" type="date" required onChange={handlePayrollDataChange} variant="bordered" isDisabled={isDisabled} />
-          <Input name="pay_period_end" label="Pay Period End" type="date" required onChange={handlePayrollDataChange} variant="bordered" isDisabled={isDisabled} />
-          <Input name="total_hours" label="Total Hours" type="number" required value={payrollData.total_hours || ''} onChange={handlePayrollDataChange} variant="bordered" isDisabled={isDisabled} />
-          
-          <div className="relative">
+            <div className="flex items-center gap-4 pt-5">
+              <label className="flex items-center gap-2 text-sm">
+                <Switch isSelected={isAutomatic} onValueChange={setIsAutomatic} />
+                Automatic Pay
+              </label>
+            </div>
+            
+            <Input name="deductions" label="Deductions ($)" type="number" value={String(payrollData.deductions || '')} onChange={handlePayrollDataChange} variant="bordered"/>
+
             <Input
-              label="Hourly Rate"
+              name="gross_pay"
+              label="Gross Pay ($)"
               type="number"
-              value={hourlyRateInput}
-              onChange={(e) => setHourlyRateInput(e.target.value)}
-              onBlur={handleRateInputBlur}
+              value={isAutomatic ? calculatedGrossPay : String(payrollData.gross_pay || '')}
+              onChange={handlePayrollDataChange}
+              isDisabled={isAutomatic}
               variant="bordered"
               step="0.01"
-              isDisabled={isDisabled}
             />
-            {loading.rate && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 animate-spin text-gray-400" />}
           </div>
-
-          <div className="flex items-center gap-4 pt-5">
-            <label className="flex items-center gap-2 text-sm">
-              <Switch isSelected={isAutomatic} onValueChange={setIsAutomatic} isDisabled={isDisabled} />
-              Automatic Pay
-            </label>
-          </div>
-          
-          <Input name="deductions" label="Deductions" type="number" value={payrollData.deductions || ''} onChange={handlePayrollDataChange} variant="bordered" isDisabled={isDisabled} />
-
-          <Input
-            name="gross_pay"
-            label="Gross Pay"
-            type="number"
-            value={isAutomatic ? calculatedGrossPay : (payrollData.gross_pay || '')}
-            onChange={handlePayrollDataChange}
-            isDisabled={isAutomatic || isDisabled}
-            variant="bordered"
-            step="0.01"
-          />
-        </div>
+        )}
         
         <div className="flex justify-end pt-4">
-          <Button type="submit" color="primary" isLoading={loading.submitting} isDisabled={isDisabled}>
+          <Button type="submit" color="primary" isLoading={loading.submitting} isDisabled={!selectedEmployee}>
             Create Payroll
           </Button>
         </div>

@@ -102,7 +102,7 @@ const TimeLogListPage: React.FC = () => {
     { key: 'end_time', header: 'Shift End', sortable: true, render: (val) => val ? new Date(val).toLocaleString() : 'Active' },
     { key: 'id', header: 'Duration', render: (_, row) => calculateCompletedDuration(row.start_time, row.end_time) },
     {
-      key: 'actions',
+      key: 'id', // Changed from 'actions' to a valid key
       header: 'Actions',
       align: 'center',
       render: (_, row) => (
@@ -131,7 +131,7 @@ const TimeLogListPage: React.FC = () => {
             onChange={(val) => setSelectedEmployee(val as EmployeeResponse | null)}
             valueKey="id"
             labelKey="first_name"
-            getDisplayValue={(item) => item ? `${item.first_name} ${item.last_name}` : "Select an employee to view logs"}
+            getDisplayValue={(item: EmployeeResponse) => item ? `${item.first_name} ${item.last_name}` : "Select an employee to view logs"}
             placeholder="Select an employee..."
           />
         </div>

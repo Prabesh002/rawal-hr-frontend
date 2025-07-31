@@ -1,4 +1,7 @@
+"use client"
+
 import type React from "react"
+import ReactDOM from 'react-dom';
 
 import { useState, useRef, useEffect, type KeyboardEvent } from "react"
 import { ChevronDown, X, Search } from "lucide-react"
@@ -11,6 +14,7 @@ interface CustomSelectProps<T extends SelectItem> {
   items: T[]
   valueKey: keyof T
   labelKey: keyof T
+  getDisplayValue?: (item: T) => string;
   placeholder?: string
   searchable?: boolean
   multiSelect?: boolean
@@ -29,6 +33,7 @@ export default function CustomSelect<T extends SelectItem>({
   items,
   valueKey,
   labelKey,
+  getDisplayValue: customGetDisplayValue,
   placeholder = "Select an option...",
   searchable = false,
   multiSelect = false,
@@ -46,10 +51,36 @@ export default function CustomSelect<T extends SelectItem>({
   const [searchQuery, setSearchQuery] = useState("")
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
   const [filteredItems, setFilteredItems] = useState<T[]>(items)
+  const [dropdownPosition, setDropdownPosition] = useState<{ top: number; left: number; width: number } | null>(null);
+
 
   const selectRef = useRef<HTMLDivElement>(null)
   const searchInputRef = useRef<HTMLInputElement>(null)
   const optionsRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const calculatePosition = () => {
+        if (selectRef.current) {
+            const rect = selectRef.current.getBoundingClientRect();
+            setDropdownPosition({
+                top: rect.bottom + window.scrollY,
+                left: rect.left + window.scrollX,
+                width: rect.width,
+            });
+        }
+    }
+
+    if (isOpen) {
+        calculatePosition();
+        window.addEventListener('resize', calculatePosition);
+        window.addEventListener('scroll', calculatePosition, true); // Use capture phase for scroll
+    }
+    
+    return () => {
+        window.removeEventListener('resize', calculatePosition);
+        window.removeEventListener('scroll', calculatePosition, true);
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     if (!searchQuery.trim()) {
@@ -66,13 +97,14 @@ export default function CustomSelect<T extends SelectItem>({
     }
   }, [searchQuery, items, labelKey, onSearch])
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
-        setSearchQuery("")
-        setHighlightedIndex(-1)
+        if (optionsRef.current && !optionsRef.current.contains(event.target as Node)) {
+          setIsOpen(false)
+          setSearchQuery("")
+          setHighlightedIndex(-1)
+        }
       }
     }
 
@@ -80,7 +112,6 @@ export default function CustomSelect<T extends SelectItem>({
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
-  // Focus search input when dropdown opens
   useEffect(() => {
     if (isOpen && searchable && searchInputRef.current) {
       searchInputRef.current.focus()
@@ -178,7 +209,7 @@ export default function CustomSelect<T extends SelectItem>({
     if (multiSelect && Array.isArray(value)) {
       return value.some((v) => v[valueKey] === item[valueKey])
     }
-    return !!(value && !Array.isArray(value) && value[valueKey] === item[valueKey])
+    return !!(value && (value as T)[valueKey] === item[valueKey]);
   }
 
   const getDisplayValue = (): string => {
@@ -186,17 +217,77 @@ export default function CustomSelect<T extends SelectItem>({
 
     if (multiSelect && Array.isArray(value)) {
       if (value.length === 0) return placeholder
-      if (value.length === 1) return String(value[0][labelKey])
+      if (value.length === 1) return customGetDisplayValue ? customGetDisplayValue(value[0]) : String(value[0][labelKey])
       return `${value.length} items selected`
     }
 
-    if (value && !Array.isArray(value)) {
-      return String(value[labelKey])
-    }
-    return placeholder
+    const singleValue = value as T;
+    return customGetDisplayValue ? customGetDisplayValue(singleValue) : String(singleValue[labelKey]);
   }
 
   const hasValue = multiSelect ? Array.isArray(value) && value.length > 0 : value !== null
+
+  const DropdownContent = (
+    <div 
+        ref={optionsRef}
+        style={{
+            position: 'absolute',
+            top: `${dropdownPosition?.top}px`,
+            left: `${dropdownPosition?.left}px`,
+            width: `${dropdownPosition?.width}px`,
+        }}
+        className="z-50"
+    >
+        <div className="w-full mt-1 bg-white dark:bg-[#171717] border border-gray-300 dark:border-gray-600 rounded-md shadow-lg">
+        {searchable && (
+            <div className="p-2 border-b border-gray-200 dark:border-gray-600">
+            <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                ref={searchInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={searchPlaceholder}
+                className="w-full pl-9 pr-3 py-2 text-sm
+                            bg-white dark:bg-[#171717] 
+                            border border-gray-300 dark:border-gray-600
+                            rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                            dark:focus:ring-blue-400 dark:focus:border-blue-400
+                            text-gray-900 dark:text-gray-100
+                            placeholder-gray-500 dark:placeholder-gray-400"
+                />
+            </div>
+            </div>
+        )}
+
+        <div className={`py-1 overflow-auto ${maxHeight}`}>
+            {filteredItems.length === 0 ? (
+            <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">{noResultsText}</div>
+            ) : (
+            filteredItems.map((item, index) => (
+                <div
+                key={`${item[valueKey]}-${index}`}
+                onClick={() => handleSelect(item)}
+                className={`
+                    px-3 py-2 text-sm cursor-pointer flex items-center justify-between
+                    ${highlightedIndex === index ? "bg-blue-100 dark:bg-blue-900" : "hover:bg-gray-100 dark:hover:bg-gray-800"}
+                    ${isSelected(item) ? "bg-blue-50 dark:bg-blue-950 text-blue-900 dark:text-blue-100" : "text-gray-900 dark:text-gray-100"}
+                `}
+                >
+                <span className="truncate">{String(item[labelKey])}</span>
+                {isSelected(item) && (
+                    <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                    <div className="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                )}
+                </div>
+            ))
+            )}
+        </div>
+        </div>
+    </div>
+  );
 
   return (
     <div
@@ -205,7 +296,6 @@ export default function CustomSelect<T extends SelectItem>({
       onKeyDown={handleKeyDown}
       tabIndex={disabled ? -1 : 0}
     >
-      {/* Main Select Button */}
       <div
         onClick={handleToggle}
         className={`
@@ -267,57 +357,7 @@ export default function CustomSelect<T extends SelectItem>({
         </div>
       </div>
 
-      {/* Dropdown */}
-      {isOpen && (
-        <div className="absolute z-50 w-full mt-1 bg-white dark:bg-[#171717] border border-gray-300 dark:border-gray-600 rounded-md shadow-lg">
-          {searchable && (
-            <div className="p-2 border-b border-gray-200 dark:border-gray-600">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  ref={searchInputRef}
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={searchPlaceholder}
-                  className="w-full pl-9 pr-3 py-2 text-sm
-                           bg-white dark:bg-[#171717] 
-                           border border-gray-300 dark:border-gray-600
-                           rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                           dark:focus:ring-blue-400 dark:focus:border-blue-400
-                           text-gray-900 dark:text-gray-100
-                           placeholder-gray-500 dark:placeholder-gray-400"
-                />
-              </div>
-            </div>
-          )}
-
-          <div ref={optionsRef} className={`py-1 overflow-auto ${maxHeight}`}>
-            {filteredItems.length === 0 ? (
-              <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">{noResultsText}</div>
-            ) : (
-              filteredItems.map((item, index) => (
-                <div
-                  key={`${item[valueKey]}-${index}`}
-                  onClick={() => handleSelect(item)}
-                  className={`
-                    px-3 py-2 text-sm cursor-pointer flex items-center justify-between
-                    ${highlightedIndex === index ? "bg-blue-100 dark:bg-blue-900" : "hover:bg-gray-100 dark:hover:bg-gray-800"}
-                    ${isSelected(item) ? "bg-blue-50 dark:bg-blue-950 text-blue-900 dark:text-blue-100" : "text-gray-900 dark:text-gray-100"}
-                  `}
-                >
-                  <span className="truncate">{String(item[labelKey])}</span>
-                  {isSelected(item) && (
-                    <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
-                    </div>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      )}
+      {isOpen && dropdownPosition && ReactDOM.createPortal(DropdownContent, document.body)}
     </div>
   )
 }

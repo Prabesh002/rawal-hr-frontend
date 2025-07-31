@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card } from '@heroui/card';
 import { DollarSign, Clock, CheckCircle2, AlertTriangle, TrendingUp, Loader2 } from 'lucide-react';
 
@@ -80,7 +80,7 @@ const EmployeePayReportPage: React.FC = () => {
     const regularHours = workedHours - overtimeHours;
 
     const regularPay = regularHours * hourlyRate;
-    const overtimePay = overtimeHours * hourlyRate;
+    const overtimePay = overtimeHours * hourlyRate * 1.5;
     const totalPay = regularPay + overtimePay;
 
     setReportData({ requiredHours, workedHours, overtimeHours, regularPay, overtimePay, totalPay });
@@ -172,7 +172,7 @@ const EmployeePayReportPage: React.FC = () => {
               onChange={(val) => setSelectedEmployee(val as EmployeeResponse | null)}
               valueKey="id"
               labelKey="email"
-              getDisplayValue={(item) => item ? employeeLabel(item) : 'Select an employee...'}
+              getDisplayValue={(item: EmployeeResponse) => item ? employeeLabel(item) : 'Select an employee...'}
               placeholder="Search an employee..."
             />
           </div>

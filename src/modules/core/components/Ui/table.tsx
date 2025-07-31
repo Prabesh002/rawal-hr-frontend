@@ -381,7 +381,6 @@ export function Table<T extends Record<string, any>>({
   onPageChange,
   totalItems,
   emptyMessage = "No data available",
-  loadingMessage = "Loading...",
 }: TableProps<T>) {
   const [searchTerm, setSearchTerm] = useState("")
   const [sortConfig, setSortConfig] = useState<{
