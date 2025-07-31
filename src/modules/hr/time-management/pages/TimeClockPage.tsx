@@ -7,20 +7,7 @@ import { useHrService } from '../../services/hrService';
 import useAppToasts from '@/modules/core/hooks/useAppToasts';
 import { title, subtitle } from '@/modules/core/design-system/primitives';
 import type { TimeLogResponse } from '../../api/models/TimeLog';
-
-const formatElapsedTime = (startTime: string): string => {
-  const start = new Date(startTime).getTime();
-  const now = new Date().getTime();
-  const difference = Math.floor((now - start) / 1000);
-
-  const hours = Math.floor(difference / 3600);
-  const minutes = Math.floor((difference % 3600) / 60);
-  const seconds = difference % 60;
-
-  return [hours, minutes, seconds]
-    .map(v => v.toString().padStart(2, '0'))
-    .join(':');
-};
+import { formatLiveElapsedTime } from '../utils/duration';
 
 const TimeClockPage: React.FC = () => {
   const { getActiveShift, startShift, stopShift } = useHrService();
@@ -40,7 +27,7 @@ const TimeClockPage: React.FC = () => {
   useEffect(() => {
     if (activeShift) {
       const timer = setInterval(() => {
-        setElapsedTime(formatElapsedTime(activeShift.start_time));
+        setElapsedTime(formatLiveElapsedTime(activeShift.start_time));
       }, 1000);
       return () => clearInterval(timer);
     }

@@ -6,7 +6,7 @@ import { Table, type Column } from '@/modules/core/components/Ui/table';
 import { title } from '@/modules/core/design-system/primitives';
 import { useHrService } from '@/modules/hr/services/hrService';
 import CustomSelect from '@/modules/core/components/Ui/custom-select';
-import { calculateDuration } from '../utils/duration';
+import { calculateCompletedDuration } from '../utils/duration';
 import useAppToasts from '@/modules/core/hooks/useAppToasts';
 
 import type { TimeLogResponse } from '../../api/models/TimeLog';
@@ -66,7 +66,7 @@ const TimeLogListPage: React.FC = () => {
     },
     { key: 'start_time', header: 'Shift Start', sortable: true, render: (val) => new Date(val).toLocaleString() },
     { key: 'end_time', header: 'Shift End', sortable: true, render: (val) => val ? new Date(val).toLocaleString() : 'Active' },
-    { key: 'id', header: 'Duration', render: (_, row) => calculateDuration(row.start_time, row.end_time) },
+    { key: 'id', header: 'Duration', render: (_, row) => calculateCompletedDuration(row.start_time, row.end_time) },
     {
       key: 'actions',
       header: 'Actions',
@@ -77,10 +77,9 @@ const TimeLogListPage: React.FC = () => {
           {isAdmin && (
             <>
               <Button size="sm" onPress={() => navigate(`/hr/time-logs/${row.id}/edit`)}>Edit</Button>
-             
+              <Button size="sm" color="danger" variant="light" onPress={() => handleDelete(row.id)}>Delete</Button>
             </>
           )}
-           <Button size="sm" color="danger" variant="light" onPress={() => handleDelete(row.id)}>Delete</Button>
         </div>
       ),
     },

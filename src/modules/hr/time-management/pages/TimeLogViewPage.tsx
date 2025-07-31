@@ -6,7 +6,7 @@ import { Trash } from 'lucide-react';
 
 import { useHrService } from '../../services/hrService';
 import { title, subtitle } from '@/modules/core/design-system/primitives';
-import { calculateDuration } from '../utils/duration';
+import { calculateCompletedDuration } from '../utils/duration';
 import useAppToasts from '@/modules/core/hooks/useAppToasts';
 
 import type { TimeLogResponse } from '../../api/models/TimeLog';
@@ -81,7 +81,7 @@ const TimeLogViewPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               <DetailItem label="Shift Start Time" value={new Date(timeLog.start_time).toLocaleString()} />
               <DetailItem label="Shift End Time" value={timeLog.end_time ? new Date(timeLog.end_time).toLocaleString() : 'Still Active'} />
-              <DetailItem label="Total Duration" value={calculateDuration(timeLog.start_time, timeLog.end_time)} />
+              <DetailItem label="Total Duration" value={calculateCompletedDuration(timeLog.start_time, timeLog.end_time)} />
           </div>
       </Card>
     </section>
