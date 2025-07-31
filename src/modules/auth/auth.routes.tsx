@@ -16,7 +16,8 @@ export const authRoutes: AppRoute[] = [
       {
         path: AUTH_PAGE_ROUTES.REGISTER.slice(1),
         element: <RegisterPage />,
-        isPublic: true
+        isPublic: false,
+        requiresAdmin : true
       }
     ]
   }

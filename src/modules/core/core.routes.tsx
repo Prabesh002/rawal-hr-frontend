@@ -13,23 +13,24 @@ export const coreRoutes: AppRoute[] = [
       {
         index: true, 
         element: <IndexPage />,
-      },
-      {
-        path: "docs", 
-        element: <DocsPage />,
-      },
-      {
-        path: "pricing",
-        element: <PricingPage />,
-      },
-      {
-        path: "blog",
-        element: <BlogPage />,
-      },
-      {
-        path: "about",
-        element: <AboutPage />,
-      },
+        requiresAuth: true, 
+      }
+      // {
+      //   path: "docs", 
+      //   element: <DocsPage />,
+      // },
+      // {
+      //   path: "pricing",
+      //   element: <PricingPage />,
+      // },
+      // {
+      //   path: "blog",
+      //   element: <BlogPage />,
+      // },
+      // {
+      //   path: "about",
+      //   element: <AboutPage />,
+      // },
       
       // {
       //   path: "items/:itemId",

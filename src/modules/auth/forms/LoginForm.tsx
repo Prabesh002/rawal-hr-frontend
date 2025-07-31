@@ -1,13 +1,11 @@
 import React from 'react';
 import { Card } from '@heroui/card';
-import { useNavigate } from 'react-router-dom';
 import { Input } from '@heroui/input';
 import { Button } from '@heroui/button';
 
-import { title, text, subtitle } from '@/modules/core/design-system/primitives';
+import { title, subtitle } from '@/modules/core/design-system/primitives';
 import { useAuthService } from '../services/authService';
 import type { LoginRequest } from '../api/models/LoginRequest';
-import { AUTH_PAGE_ROUTES } from '../routes/authRouteConstants';
 import useAppToasts from '@/modules/core/hooks/useAppToasts';
 
 export interface LoginFormProps {
@@ -15,7 +13,6 @@ export interface LoginFormProps {
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
-  const navigate = useNavigate();
   const { login } = useAuthService();
   const { showToast } = useAppToasts();
   const [formData, setFormData] = React.useState<LoginRequest>({
@@ -96,27 +93,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
               {isLoading ? 'Signing in...' : 'Sign In'}
             </Button>
 
-            <div className="text-center pt-8 space-y-4">
-              <p className={text({ size: 'sm', align: 'center' })}>
-                Don't have an account?{' '}
-                <Button
-                  variant="light"
-                  size="sm"
-                  onClick={() => navigate(AUTH_PAGE_ROUTES.REGISTER)}
-                  className="p-0 h-auto font-medium text-foreground hover:text-foreground/80 underline-offset-4 hover:underline"
-                >
-                  Sign up
-                </Button>
-              </p>
-              
-              <Button
-                variant="light"
-                size="sm"
-                className="text-default-500 hover:text-foreground p-0 h-auto font-normal underline-offset-4 hover:underline transition-colors duration-200"
-              >
-                Forgot your password?
-              </Button>
-            </div>
+            
           </form>
         </Card>
       </div>
