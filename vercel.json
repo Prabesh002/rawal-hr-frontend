@@ -1,6 +1,5 @@
 {
   "rewrites": [
     { "source": "/(.*)", "destination": "/" }
-  ],
-  "baseApiUrl": "http://168.231.120.237:8000"
-},
+  ]
+}
